@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Geo-localización nativa con HTML 5</title>
+</head>
+<body >
+    <h1>Ejemplo de Geo-localización nativa con HTML 5</h1>
+    <p id="nivelSoporte">La Geo-localización nativa NO está soportada en este navegador.</p>
+    <h2>Ubicación actual:</h2>
+    <h5>Latitud: <span id="latitud">n/c</span></h5>
+    <h5>Longitud: <span id="longitud">n/c</span></h5>
+    <h5>Precisión: <span id="precision">n/c</span></h5>
+
+    <script type="text/javascript">
+        document.body.onload=obtenerLocalizacion;
+        
+        function obtenerLocalizacion() {
+            if(navigator.geolocation) {
+                document.getElementById("nivelSoporte").innerHTML ="La Geo-Localizacion HTML5 está soportada en este navegador.";
+                navigator.geolocation.getCurrentPosition(updateLocation);
+            }
+        }
+
+        function updateLocation(position) {
+            console.log('position:',position)
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+            var pre = position.coords.accuracy;
+
+            if (!lat || !lon) {
+                document.getElementById("nivelSoporte").innerHTML =
+                    "Geo-Localizacion HTML5 soportada, pero no en este momento.";
+                return;
+            }
+            document.getElementById("latitud").innerHTML = lat;
+            document.getElementById("longitud").innerHTML = lon;
+            document.getElementById("precision").innerHTML = pre + " ms.";
+        }
+    </script>
+</body>
+</html> 

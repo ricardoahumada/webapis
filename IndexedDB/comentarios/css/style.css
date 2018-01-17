@@ -1,0 +1,20 @@
+article {
+    background-color:aliceblue;
+}
+#entradasUsuario {
+    border: 2px solid Navy;
+    margin: 12px;
+    padding: 5px;
+}
+    #entradasUsuario > input[type='text'], #entradasUsuario > input[type='date'] {
+        position: absolute;
+        left: 150px;
+        width: 300px;
+    }
+    #btnNuevoComentario {
+        margin: 10px 12px;
+    }
+.colImpar {
+    background-color: aliceblue;
+}
+thead > tr { font-weight:bold; }

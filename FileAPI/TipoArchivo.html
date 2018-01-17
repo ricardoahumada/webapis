@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API de ficheros</title>
+    <style>
+        * {
+            font-family: "Segoe UI";
+        }
+    </style>
+</head>
+<body>
+    <h2>Demo de las API de archivos</h2>
+    <h3>Análisis del tipo de archivo (soporta .png, .gif, .pdf y .zip)</h3>
+    <hr />
+
+    <script>
+        // Examina los primeros 4 bytes del blog indicado (firma del fichero).
+        // Por ella se identifica el tipo de fichero.
+        function tipoFichero(fichero) {
+            var cabecera = fichero.slice(0, 4);    // Se lee solo el comienzo del fichero
+            var reader = new FileReader();     // Crear un FileReader asíncrono
+            reader.readAsArrayBuffer(cabecera);   // Se lee el fragmento indicado
+            reader.onload = function (e) {
+                var buffer = reader.result;           // result contiene lo leído
+                var view = new DataView(buffer);      // Se accede a los bytes resultantes
+                var firma = view.getUint32(0, false); // Se leen 4 bytes, (cod. big-endian)
+                switch (firma) {                       // A partir, de ahí se deduce el tipo
+                    // Los valores de case pueden verse en la documentación oficial
+                    case 0x89504E47: fichero.verified_type = "image/png"; break;
+                    case 0x47494638: fichero.verified_type = "image/gif"; break;
+                    case 0x25504446: fichero.verified_type = "application/pdf"; break;
+                    case 0x504b0304: fichero.verified_type = "application/zip"; break;
+                }
+                console.log(fichero.name, fichero.verified_type);
+            };
+        }
+    </script>
+    <input type="file" onchange="tipoFichero(this.files[0])" />
+</body>
+</html>

@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Workers aleatorios (Citas)</title>
+    <style>
+        p {
+            font-family: 'Segoe UI';
+            font-size: 18px;
+            font-weight: bold;
+            color: #0000FF;
+            padding: 10px;
+            margin: 20px;
+            border: 2px solid Navy;
+        }
+    </style>
+    <script src="../../Scripts/jquery-2.1.1.js"></script>
+    <script src="../../Scripts/jquery-ui-1.11.2.js"></script>
+    <script type="text/javascript">
+        var worker = new Worker("citas.js");
+
+        worker.onmessage = function (event) {
+            $('<p></p>').text(event.data).insertAfter($('#cita'));
+
+            //document.getElementById("cita").innerHTML = event.data;
+            //alert("Ha llegao esto, Jefe: " + event.data);
+        }
+        worker.onerror = function (error) {
+            document.getElementById("cita").innerHTML = error.message;
+        }
+    </script>
+</head>
+<body>
+    <h3>Demo de uso de Web Workers</h3>
+    <hr />
+    <p id="cita" style="background-color:aquamarine;">Listado dinámico de citas célebres</p>
+</body>
+</html>

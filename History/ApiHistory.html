@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <script src="Scripts/jquery-2.1.1.js"></script>
+</head>
+<body>
+    <style>
+        #contenido {
+            float: left;
+            padding: 20px;
+            border: 1px solid #999999;
+        }
+
+        #cajadatos {
+            float: left;
+            width: 500px;
+            margin-left: 20px;
+            padding: 20px;
+            border: 1px solid #999999;
+        }
+
+        #contenido span {
+            color: #0000FF;
+            cursor: pointer;
+        }
+    </style>
+    <h2>API History</h2>
+    <section id="contenido">
+        Este contenido nunca se actualiza<br>
+        <span id="url">página 2</span>
+    </section>
+    <aside id="cajadatos"></aside>
+
+    <script>
+        // Versión jQuery (1)
+        //$(document).ready(function () {
+        //    $('#url').click(cambiar);
+        //});
+
+        //function cambiar(event) {
+        //    $('#cajadatos').html('La URL es pagina2');
+        //    history.pushState(null, null, 'pagina2.html');
+        //}
+
+        // Versión jQuery (2)
+        $(document).ready(function () {
+            $('#url').click(function () {
+                $('#cajadatos').html('La URL es pagina2');
+                history.pushState(null, null, 'pagina2.html');
+            });
+        });
+
+        window.onpopstate = function (event) {
+            if (event.state) {
+                // History ha cambiado mediante
+                // pushState o replaceState.
+                alert(event.state);
+            } else {
+                // Carga normal de página
+                alert(event.state);
+            }
+        }
+
+        // Version JavaScript clásica
+        //function asignarEventos() {
+        //    cajadatos = document.getElementById('cajadatos');
+        //    url = document.getElementById('url');
+        //    url.addEventListener('click', cambiar, false);
+        //}
+
+        //function cambiar() {
+        //    cajadatos.innerHTML = 'La URL es pagina2';
+        //    // Pagina2.html no existe en realidad
+        //    window.history.pushState(null, null, 'pagina2.html');
+        //}
+
+        //window.addEventListener('load', asignarEventos, false);
+    </script>
+</body>
+</html>

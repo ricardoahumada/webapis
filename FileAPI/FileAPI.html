@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html >
+<html>
+<head>
+    <title>API de ficheros</title>
+    <style>
+        * {
+            font-family: "Segoe UI";
+        }
+    </style>
+</head>
+<body>
+    <h2>Demo de las API de archivos</h2>
+    <h3>Incluye selección y lista de tipos y lectura de contenidos</h3>
+    <hr />
+    <h3>Seleccionar fichero(s)</h3>
+    <p><input id="files-upload" type="file" multiple /></p>
+    <h3>Ficheros subidos</h3>
+    <ul id="file-list"><li>(no hay ficheros todavía)</li></ul>
+
+    Selecciona un fichero de texto a mostrar:
+    <input type="file" onchange="readfile(this.files[0])" />
+    <pre id="salida"></pre>
+
+    <script>
+        (function () {
+            // Recuperamos las referencias a los dos elementos implicados 
+            var filesUpload = document.getElementById("files-upload"),
+				fileList = document.getElementById("file-list");
+
+            // Función para recorrer el conjunto de archivos 
+            // y actualizar la interfaz de usuario con la información
+            // sobre ellos.
+            function traverseFiles(files) {
+                var li,file,fileInfo;
+                fileList.innerHTML = "";
+
+                for (var i = 0, il = files.length; i < il; i++) {
+                    li = document.createElement("li");
+                    file = files[i];
+                    fileInfo = "<div><strong>Fichero:</strong> " + file.name + "</div>";
+                    fileInfo += "<div><strong>Tamaño:</strong> " + file.size + " bytes</div>";
+                    fileInfo += "<div><strong>Tipo:</strong> " + file.type + "</div>";
+                    li.innerHTML = fileInfo;
+                    fileList.appendChild(li);
+                };
+            };
+
+            filesUpload.onchange = function () {
+                traverseFiles(this.files);
+            };
+             
+        })();
+
+        // Lee un fichero de texto y lo presenta en el elemento <pre>
+        function readfile(f) {
+            var reader = new FileReader();  // Crea un objeto FileReader 
+            reader.readAsText(f);           // Lee el fichero
+            reader.onload = function () {    // manejador de vento
+                var text = reader.result;   // Recupera los contenidos
+                var etiquetaSalida = document.getElementById("salida");    // Localiza el elemento de salida
+                etiquetaSalida.innerHTML = "";                             // Lo vacía
+                etiquetaSalida.appendChild(document.createTextNode(text)); // Muestra contenidos
+            }
+            reader.onerror = function (e) {  // si falla la lectura
+                console.log("Error", e);    // Lo muestra en consola
+            };
+        }
+</script>
+
+</body>
+</html>

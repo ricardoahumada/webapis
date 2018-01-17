@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>API de Almacenamiento Local</title>
+    <style>
+        #DatosSesion {
+            border: 2px solid #ff6a00;
+            margin: 10px;
+        }
+
+        #DatosLocales {
+            border: 2px solid blue;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>API de Almacenamiento Local y de Sesión</h2>
+    <label id="soporteSS">Soporte de Session Storage: </label><br />
+    <label id="soporteLS">Soporte de Local Storage: </label>
+    <fieldset id="DatosSesion" title="Almacenamiento de Sesión">
+        <legend>Almacenamiento de Sesión</legend>
+        <input type="text" id="inputTemporal" />
+        <input type="button" value="Grabar" onclick="GrabarClaveSesion('claveTemporal');" /><br />
+        <input type="text" id="valorTemporal" />
+        <input type="button" value="Leer" onclick="LeerClaveSesion('claveTemporal');" />
+    </fieldset>
+    <fieldset id="DatosLocales" title="Almacenamiento Local">
+        <legend>Almacenamiento Local</legend>
+        <input type="text" id="inputPermanente" />
+        <input type="button" value="Grabar" onclick="GrabarClaveLocal('clavePermanente');" /><br />
+        <input type="text" id="valorPermanente" />
+        <input type="button" value="Leer" onclick="LeerClaveLocal('clavePermanente');" />
+    </fieldset>
+
+    <a href="Pagina2.html">Cambio de página al mismo dominio</a><br />
+    <a href="http://google.es" target="_parent">Navegación a otro dominio (depende del caché)</a>
+</body>
+<script>
+    document.body.onload=comprobarSoporte;
+
+    function comprobarSoporte() {
+        //sessionStorage
+        if (window.sessionStorage) {
+            document.getElementById("soporteSS").innerHTML = "Soporte Session Storage: SI";
+        } else {
+            document.getElementById("soporteSS").innerHTML = "Soporte Session Storage: NO";
+        }
+        //localStorage
+        if (window.localStorage) {
+            document.getElementById("soporteLS").innerHTML = "Soporte Local Storage: SI";
+        } else {
+            document.getElementById("soporteLS").innerHTML = "Soporte Local Storage: NO";
+        }
+    }
+
+    // Session Storage
+    function GrabarClaveSesion(clave) {
+        var valor = document.getElementById("inputTemporal").value;
+        window.sessionStorage.setItem(clave, valor);
+    }
+
+    function LeerClaveSesion(clave) {
+        var valor = window.sessionStorage.getItem(clave);
+        document.getElementById("valorTemporal").value = valor;
+    }
+
+    // Local Storage
+    function GrabarClaveLocal(clave) {
+        var valor = document.getElementById("inputPermanente").value;
+        // la línea siguiente utiliza la sintaxis alternativa
+        window.localStorage.clave = valor;
+    }
+
+    function LeerClaveLocal(clave) {
+        // la línea siguiente utiliza la sintaxis alternativa
+        var valor = window.localStorage.clave;
+        document.getElementById("valorPermanente").value = valor;
+    }
+</script>
+</html>

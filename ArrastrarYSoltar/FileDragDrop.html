@@ -1,0 +1,199 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Demo del API de Arrastrar y Soltar con Ficheros</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" /> 
+
+    <style type="text/css">
+    body {
+        font-family: Segoe WP;
+        background-color: #e0e0e0;
+        height: 100%;
+        margin: 0;
+    }
+    header {
+        width: 100%;
+        height: 36px;
+        background-color: #404040;
+        border: 1px solid gray;
+        color: White;
+        line-height: 2em;
+        text-align: center;
+    }
+    #main {
+	    position: absolute;
+        width: 800px;
+        left: 50%;
+        margin-left: -400px;
+        margin-top: 16px;
+    }
+    </style>
+
+    <script type="text/javascript" src="../scripts/jquery-1.6.2.min.js"></script>
+
+    <script type="text/javascript">
+        var BLOCK_SIZE = 8;
+        var _mainCanvas, _mainContext;
+        var _hiddenCanvas, _hiddenContext;
+        var _bitmap;
+
+        $(function () {
+            // Control de soporte de file API
+            if (!(window.File && window.FileReader && window.FileList)) {
+                alert("Este navegador no soporta file API");
+                return;
+            }
+
+            // Canvas secundario para mostrar el contexto
+            _hiddenCanvas = document.createElement("canvas");
+            _hiddenContext = _hiddenCanvas.getContext("2d");
+
+            // Control de soporte canvas
+            if (!_hiddenContext) {
+                alert("Este navegador no soporta canvas");
+                return;
+            }
+
+            // Referencia al canvas principal y su contexto
+            _mainCanvas = document.getElementById("photo");
+            _mainContext = _mainCanvas.getContext("2d");
+
+            // Registramos manejadores de eventos
+            document.addEventListener("dragover", onDragOver, false);
+            document.addEventListener("drop", onDrop, false);
+
+            // Asociamos el evento click 
+            $("#photo").click(onImageClicked);
+        });
+
+        function onDragOver(e) {
+            e.preventDefault(); // Importante!
+        }
+
+        function onDrop(e) {
+            e.preventDefault(); // Importante!
+            var files = e.dataTransfer.files; // Objeto FileList 
+
+            if (files && files.length == 1) {
+                // Obtenemos el objeto File que representa al fichero seleccionado
+                var file = files[0];
+
+                // Nos aseguramos de que es una imagen
+                if (!file.type.match("image.*")) {
+                    alert("\"" + file.name + "\" no es un fichero de imagen");
+                    return;
+                }
+                // Para leer los contenidos de un archivo, podemos usar 
+                // un objeto FileReader
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    image = new Image();
+                    image.src = e.target.result;
+
+                    image.onload = function () {
+                        // Se inicializa el canvas basándonos en el tamaño
+                        // de la imagem
+                        var width = image.width;
+                        var height = image.height;
+                        var ratio = height / width;
+
+                        _mainCanvas.width = Math.min(800, width);
+                        _mainCanvas.height = _mainCanvas.width * ratio;
+
+                        // Convertimos la imagen en un objeto ImageData dibujándolo
+                        // en el canvas oculto y llamando a gerImageData sobre ese canvas
+                        _hiddenCanvas.width = image.width;
+                        _hiddenCanvas.height = image.height;
+                        _hiddenContext.drawImage(image, 0, 0, _hiddenCanvas.width, _hiddenCanvas.height);
+                        _bitmap = _hiddenContext.getImageData(0, 0, _hiddenCanvas.width, _hiddenCanvas.height);
+
+                        // Transfiere (y escala) la imagen desde el 
+                        // canvas oculto al canvas principal
+                        _mainContext.drawImage(_hiddenCanvas, 0, 0, _mainCanvas.width, _mainCanvas.height);
+                    }
+                }
+
+                // Lee los contenidos del fichero de imagen como "data URL"
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function onImageClicked(e) {
+            if (_bitmap !== null) { // comprobacion
+                var x, y;
+
+                // coordenadas del click
+                if (e.offsetX && e.offsetY) {
+                    x = e.offsetX;
+                    y = e.offsetY;
+                }
+                else {
+                    // Firefox no soporta offsetX y offsetY
+                    var dx = 0;
+                    var dy = 0;
+                    var obj = this;
+
+                    while (obj !== document) {
+                        dx += obj.offsetLeft;
+                        dy += obj.offsetTop;
+                        obj = obj.parentNode;
+                    }
+
+                    x = e.pageX - dx;
+                    y = e.pageY - dy;
+                }
+
+                // Traducir coordenadas de click a coordenadas de imagen
+                x *= _hiddenCanvas.width / _mainCanvas.width;
+                y *= _hiddenCanvas.height / _mainCanvas.height;
+
+                // Arreglar los ojos rojos debajo del cursor
+                fixRedEyes(x, y);
+            }
+        }
+
+        function fixRedEyes(x, y) {
+            // Calcular los límites de la region a examinar
+            var d = BLOCK_SIZE * (_hiddenCanvas.width / _mainCanvas.width);
+            var x1 = Math.max(0, x - d);
+            var x2 = Math.min(x + d, _bitmap.width);
+            var y1 = Math.max(0, y - d);
+            var y2 = Math.min(y + d, _bitmap.height);
+
+            // Recorrer los pixeles de la region, rebajando los valores en rojo
+            // que sobrepasen la suma de los valores azul y verde
+            for (i = x1; i < x2; i++) {
+                for (j = y1; j < y2; j++) {
+                    var index = (i + j * _bitmap.width) << 2;
+                    var r = _bitmap.data[index + 0];
+                    var g = _bitmap.data[index + 1];
+                    var b = _bitmap.data[index + 2];
+
+                    if (r > (g + b)) {
+                        _bitmap.data[index + 0] = (g + b) / 2;
+                    }
+                }
+            }
+
+            // Dibuja la porción del bitmap modificado en el canvas oculto
+            _hiddenContext.putImageData(_bitmap, 0, 0, x1, y1, x2 - x1, y2 - y1);
+
+            // Transfiere (y escala) la imagen desde el 
+            // canvas oculto al canvas principal            
+            _mainContext.drawImage(_hiddenCanvas, 0, 0, _mainCanvas.width, _mainCanvas.height);
+        }
+    </script>
+</head>
+
+<body>
+    <header>
+        Suelta una imagen en esta zona para poder editarla
+    </header>
+
+    <div id="main">
+        <canvas id="photo" style="cursor: crosshair"></canvas>
+    </div>
+</body>
+</html>

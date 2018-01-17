@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Flight Schedule</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+
+
+    <link href="css/themes/base/base.css" rel="stylesheet" />
+    <link href="css/themes/base/resizable.css" rel="stylesheet" />
+    <link href="css/themes/base/sortable.css" rel="stylesheet" />
+    <link href="css/themes/base/theme.css" rel="stylesheet" />
+    
+    <link rel="stylesheet" href="css/style.css">
+
+
+    <script src="../../Scripts/jquery-2.1.1.js"></script>
+    <script src="../../Scripts/jquery-ui-1.11.2.js"></script>
+
+    <script src="js/flightlog.js"></script>
+</head>
+
+<body>
+    <div id="main">
+        <div id="buttons">
+            <input type="button" value="All" class="query" />
+            <!-- Other buttons added here dynamically -->
+        </div>
+        <table id="flights">
+            <colgroup class="evencol"></colgroup>
+            <colgroup class="oddcol"></colgroup>
+            <colgroup class="evencol"></colgroup>
+            <colgroup class="oddcol"></colgroup>
+            <colgroup class="evencol"></colgroup>
+            <colgroup class="oddcol"></colgroup>
+
+            <thead>
+                <tr>
+                    <td>Jet</td>
+                    <td>Date</td>
+                    <td>Location</td>
+                    <td>Duration</td>
+                    <td>Max EGT</td>
+                    <td>Max Pump</td>
+                </tr>
+            </thead>
+
+            <tbody></tbody>
+        </table>
+
+        <input id="test" type="button" value="Add Flight" style="width: 100%; height: 48px; margin: 4px" />
+
+        <!-- Add Flight dialog -->
+        <div id="dialog" title="Add Flight">
+            <form>
+                <label>Jet</label>
+                <input type="text" id="jet" name="jet" required />
+                <label>Date</label>
+                <input type="date" id="date" name="date" required />
+                <label>Location</label>
+                <input type="text" id="location" name="location" required />
+                <label>Duration</label>
+                <input type="number" id="duration" name="duration" required />
+                <label>Max EGT</label>
+                <input type="number" id="egt" name="egt" min="1" max="2000" />
+                <label>Max Pump Voltage</label>
+                <input type="text" id="pump" name="pump" />
+            </form>
+        </div>
+    </div>
+</body>
+</html>

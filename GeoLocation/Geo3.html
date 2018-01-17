@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Geo-Localización con Google Maps</title>
+    <script src="../Scripts/jquery-2.1.1.js"></script>
+</head>
+<body>
+    <h2>Geo-Localización con Google Maps</h2><hr />
+    <p>
+        <img id="map" alt="" 
+             src="http://maps.google.com/maps/api/staticmap?&amp;size=900x300&amp;sensor=false&amp;maptype=roadmap&amp;markers=color:green|label:C|77+West+Wacker+Drive+Chicago+IL" />
+    </p>
+    <script type="text/javascript" charset="utf-8">
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                showLocation(position.coords.latitude, position.coords.longitude);
+            });
+        }else {
+            var key = "your_key";
+            var script = "http://www.google.com/jsapi?key=" + key;
+            $.getScript(script, function () {
+                if ((typeof google == 'object') &&
+             google.loader && google.loader.ClientLocation) {
+                    showLocation(google.loader.ClientLocation.latitude,
+                          google.loader.ClientLocation.longitude);
+                }else {
+                    var message = $("<p>No se encuentra la dirección.</p>");
+                    message.insertAfter("#map");
+                };
+            });
+        };
+
+
+        var showLocation = function (lat, lng) {
+            var fragment = "&markers=color:red|color:red|label:Y|" + lat + "," + lng;
+            var image = $("#map");
+            var source = image.attr("src") + fragment;
+            source = source.replace("sensor=false", "sensor=true");
+            image.attr("src", source);
+        };
+
+if (navigator.geolocation) {     
+    navigator.geolocation.getCurrentPosition(
+        function (position) {
+            //TODO: Centrar el mapa según las coordenadas        
+    },         
+        function (error) {             
+        //TODO Manejar errores
+    }); } else {      
+    //TODO Solución para resolución IP
+}
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <style>
+        #origenes {
+            float: left;
+        }
+        img, div {
+            border: 2px dotted red;
+            padding: 10px;
+        }
+        #CajaDestino {
+            width: 500px;
+            height: 250px;
+            border: 2px solid navy;
+        }
+    </style>
+</head>
+<body>
+    <h2>Arrastrar y Soltar</h2>
+    <section id="Origenes">
+        <img src="../Graficos/Backup-restore.png" draggable="true" id="grafico" />
+        <div id="divTexto" draggable="true">Texto desplazable</div>
+    </section>
+    <!-- Zona de destino -->
+    <div id="CajaDestino"></div>
+
+    <script>
+        // Primer modelo de Drag&drop (arrastre de
+        // elementos en la propia página
+
+        window.addEventListener('load', iniciarDD, false);
+
+        function iniciarDD() {
+            // Configuración de diversos orígenes de arrastre
+            origen1 = document.getElementById('grafico');
+            origen1.addEventListener('dragstart', evArrastrado, false);
+
+            origen2 = document.getElementById('divTexto');
+            origen2.addEventListener('dragstart', evArrastrado, false);
+
+            destino = document.getElementById('CajaDestino');
+            destino.addEventListener('dragenter', function (e) {
+                e.preventDefault();
+            }, false);
+            destino.addEventListener('dragover', function (e) {
+                e.preventDefault();
+            }, false);
+            destino.addEventListener('drop', evSoltado, false);
+        }
+
+        function evArrastrado(e) {
+            if (e.srcElement.id == "grafico") {
+                var codigo = '<img src="' + e.srcElement.getAttribute('src') + '">';
+                e.dataTransfer.setData('Text', codigo);
+            } else {
+                e.dataTransfer.setData('Text', e.srcElement.innerHTML);
+            }
+        }
+
+        function evSoltado(e) {
+            e.preventDefault();
+            destino.innerHTML = e.dataTransfer.getData('Text');
+        }
+    </script>
+
+    <script>
+        // Arrastrar archivos del sistema local
+        // Al terminar la carga inicial, lanzará la funcion iniciar
+        //window.addEventListener('load', iniciar, false);
+
+        function iniciar() {
+            destino = document.getElementById('CajaDestino');
+            destino.addEventListener('dragenter', function (e) {
+                e.preventDefault();
+            }, false);
+            destino.addEventListener('dragover', function (e) {
+                e.preventDefault();
+            }, false);
+            destino.addEventListener('drop', soltado, false);
+        }
+
+        function soltado(evento) {
+            evento.preventDefault();
+            var archivos = evento.dataTransfer.files;
+            var lista = '';
+            for (var f = 0; f < archivos.length; f++) {
+                lista += 'Archivo: ' + archivos[f].name + '  -Tamaño: ' +
+                    archivos[f].size + ' bytes' + '<br>';
+            }
+            destino.innerHTML = lista;
+        }
+
+        /* Modelo de Implementación (prototipo) */
+
+        // Esto configura el area de destino (id=dropspot)
+        //function Comienzo() {
+        // Asignar los manejadores de eventos.
+        //    var areaDestino = document.getElementById("dropspot");
+        //    areaDestino.addEventListener("drop", ElementoSoltado, false);
+        //    areaDestino.addEventListener("dragover", noHacerNada(event), false);
+        //}
+
+        //function ElementoSoltado(event) {
+        //    // Usar la función noHacerNada() para prevenir el
+        //    // comportamiento predeterminado.
+        //    noHacerNada(event);
+        //    // Capturar los ficheros soltados en el área
+        //    event.srcElement
+        //    var filelist = event.dataTransfer.files;
+        //    if (!filelist) return; // si es nulo, salir
+        //    var filecount = filelist.length; // obtener el total de ficheros
+        //    if (filecount > 0) {
+        //        // Hacer algo con los ficheros.
+        //    }
+        //}
+
+        // Prevenir que el evento continúe de forma que
+        // nuestros manejadores puedan procesarlo
+        //function noHacerNada(event) {
+        //    event.stopPropagation();
+        //    event.preventDefault();
+        //}
+    </script>
+</body>
+</html>

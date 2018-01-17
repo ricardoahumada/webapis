@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Almacenamiento de comentarios mediante IndexedDB</title>
+    <script src="../../Scripts/jquery-2.1.1.js"></script>
+    <script src="../../Scripts/modernizr-2.8.3.js"></script>
+    
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <h2>IndexedDB: <label id="soporte"></label></h2>
+    <article>
+        <h4>Auctor articulum: Publio Flavio</h4>
+        <h3>Lorem Ipsum</h3>
+        Lorem ipsum dolor sit amet, consectetuer adipiscing elit, 
+        sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna 
+        aliquam erat volutpat.  
+    </article>        
+    <h5>Comentarios</h5>
+    <table id="Comentarios_A1">
+        <colgroup class="colImpar"></colgroup>
+        <colgroup></colgroup>
+        <colgroup class="colImpar"></colgroup>
+        <thead>
+            <tr>
+                <td>Nombre</td>
+                <td>Fecha</td>
+                <td>Comentario</td>
+            </tr>
+        </thead>
+
+        <tbody></tbody>
+    </table>
+
+    <article id="entradasUsuario">
+        <label>Nombre: </label>
+        <input type="text" id="txtNombre" value="" required /><br/>        
+        <label>Fecha: </label>
+        <input type="date" id="txtFecha" value="" required  placeholder="dd/mm/aaaa"/><br />        
+        <label>Comentario: </label>
+        <input type="text" id="txtComentario" value="" required /><br />
+        <input type="button" id="btnNuevoComentario" value="Añadir" onclick="insertarComentario()" />
+    </article>
+
+
+    <script src="js/comments.js"></script>
+</body>
+</html>
