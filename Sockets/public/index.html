@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+	<button id="sendmsg">Envia Msg</button>
+	<button id="senddisc">Desconectar</button>
+</body>
+<script>
+	var socket = io.connect("http://localhost:3000/canal");
+	socket.on("news", function(data) {
+		socket.emit("pong");
+		console.log(data);
+    	socket.emit('my other event', { my: 'data' });
+	});	
+
+	socket.on('disconnect', function(event) {
+		console.log("Disconnected!");
+		socket.disconnect();
+	});
+
+	document.getElementById('sendmsg').onclick = (function (argument) {
+		console.log("Sending msg...");
+		socket.emit("msg",{other:"data"});
+	});
+
+	document.getElementById('senddisc').onclick = (function (argument) {
+		console.log("Sending disc...");
+		socket.emit("bye",{user:234});
+	});
+</script>
+</html>
